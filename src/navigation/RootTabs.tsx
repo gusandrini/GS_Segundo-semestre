@@ -3,17 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
 
-import Cadastro from '@/screens/Cadastro';
 import Home from '@/screens/Home';
+import Perfil from '@/screens/Perfil';
 import SobreApp from '@/screens/SobreApp';
 import SobreSolucao from '@/screens/SobreSolucao';
-
-export type RootTabParamList = {
-  Home: undefined;
-  SobreApp: undefined;
-  SobreSolucao: undefined;
-  Cadastro: undefined;
-};
+import { RootTabParamList } from '@/types/navigation';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -40,7 +34,7 @@ export function RootTabs() {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="SobreApp" component={SobreApp} />
       <Tab.Screen name="SobreSolucao" component={SobreSolucao} />
-      <Tab.Screen name="Cadastro" component={Cadastro} />
+      <Tab.Screen name="Perfil" component={Perfil} />
     </Tab.Navigator>
   );
 }

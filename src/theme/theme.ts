@@ -1,12 +1,12 @@
 export type Theme = {
   name: 'light' | 'dark';
   colors: {
-    background: string; // tela inteira
-    surface: string;    // cards/headers/footers
+    background: string; 
+    surface: string;    
     text: string;
     mutedText: string;
-    primary: string;
-    primaryText: string;
+    primary: string;      
+    primaryText: string;  
     border: string;
     success: string;
     warning: string;
@@ -18,6 +18,17 @@ export type Theme = {
 };
 
 
+const logoColors = {
+  blue:  '#144dcf',
+  green: '#4dff4a',
+  yellow:'#eded53',
+  red:   '#ff443e',
+};
+
+
+const PRIMARY_COLOR = logoColors.blue;
+const PRIMARY_TEXT_COLOR = '#FFFFFF';
+
 export const lightTheme: Theme = {
   name: 'light',
   colors: {
@@ -25,8 +36,8 @@ export const lightTheme: Theme = {
     surface: '#FFFFFF',
     text: '#0B1220',
     mutedText: '#6B7280',
-    primary: '#22C55E',
-    primaryText: '#ffffff',
+    primary: PRIMARY_COLOR,       
+    primaryText: PRIMARY_TEXT_COLOR,
     border: '#E5E7EB',
     success: '#16A34A',
     warning: '#F59E0B',
@@ -40,12 +51,12 @@ export const lightTheme: Theme = {
 export const darkTheme: Theme = {
   name: 'dark',
   colors: {
-    background: '#0C111B',  
+    background: '#0C111B',
     surface: '#111827',
     text: '#E5E7EB',
     mutedText: '#94A3B8',
-    primary: '#22C55E',
-    primaryText: '#0B1220',
+    primary: PRIMARY_COLOR,        
+    primaryText: PRIMARY_TEXT_COLOR,
     border: '#1F2937',
     success: '#16A34A',
     warning: '#F59E0B',

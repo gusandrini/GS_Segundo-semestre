@@ -2,12 +2,11 @@ import { useTheme } from '@/context/ThemeContext';
 import { AppLayout } from '@/layout/AppLayout';
 import { styles as localStyles } from '@/styles/screens/Home';
 import React from 'react';
-import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
+import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 const { width } = Dimensions.get('window');
 
-// Imagens de exemplo (substitua pelos seus assets)
 const images = [
   require('@/assets/business-conference-vr-office.jpg'),
   require('@/assets/homem_futuro.webp'),
@@ -20,33 +19,20 @@ export default function Home() {
 
   return (
     <AppLayout title="Início" activeScreen="Home">
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
-        
-        {/* Título principal */}
-        <Text
-          style={{
-            fontSize: 22,
-            fontWeight: '700',
-            color: theme.colors.primary,
-            marginBottom: 12,
-          }}
-        >
-          Seja Bem-vindo! O futuro do trabalho começa com você.
+      <ScrollView contentContainerStyle={localStyles.container}>
+        {/* Título e subtítulo */}
+        <Text style={[localStyles.title, { color: theme.colors.primary }]}>
+          Seja Bem-vindo!
+        </Text>
+        <Text style={[localStyles.title, { color: theme.colors.primary }]}>
+          O futuro do trabalho começa com você.
         </Text>
 
-        {/* Subtítulo */}
-        <Text
-          style={{
-            fontSize: 15,
-            fontWeight: '500',
-            color: theme.colors.text,
-            marginBottom: 20,
-          }}
-        >
+        <Text style={[localStyles.subtitle, { color: theme.colors.text }]}>
           Descubra sua probabilidade de mudança de carreira, visualize tendências do mercado e encontre novas oportunidades com o poder da IA.
         </Text>
 
-        {/* Carrossel com Swiper */}
+        {/* Carrossel */}
         <View style={localStyles.carouselContainer}>
           <Swiper
             autoplay
@@ -63,21 +49,85 @@ export default function Home() {
           </Swiper>
         </View>
 
-        {/* Card ou conteúdo extra */}
-        <View
-          style={{
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
-            borderWidth: 1,
-            borderRadius: 12,
-            padding: 16,
-            marginTop: 24,
-          }}
-        >
-          <Text style={{ color: theme.colors.text }}>
-            IA que entende seu perfil. Insights que impulsionam seu amanhã.
-          </Text>
+        {/* Ações rápidas */}
+        <View style={localStyles.section}>
+          <Text style={[localStyles.sectionTitle, { color: theme.colors.text }]}>Ações rápidas</Text>
+
+          <View style={localStyles.actionsRow}>
+            <TouchableOpacity
+              style={[
+                localStyles.actionCard,
+                { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+              ]}
+            >
+              <Text style={[localStyles.actionTitle, { color: theme.colors.text }]}>Fazer previsão</Text>
+              <Text style={[localStyles.actionDesc, { color: theme.colors.mutedText }]}>
+                Calcule sua chance de mudança de carreira.
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                localStyles.actionCard,
+                { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+              ]}
+            >
+              <Text style={[localStyles.actionTitle, { color: theme.colors.text }]}>Formulário</Text>
+              <Text style={[localStyles.actionDesc, { color: theme.colors.mutedText }]}>
+                Preencha o formulário para nossa IA.
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
+
+        {/* Destaques */}
+        <View style={localStyles.section}>
+          <Text style={[localStyles.sectionTitle, { color: theme.colors.text }]}>Destaques</Text>
+
+          <View
+            style={[
+              localStyles.card,
+              { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+            ]}
+          >
+            <Text style={[localStyles.cardTitle, { color: theme.colors.text }]}>
+              IA que entende seu perfil
+            </Text>
+            <Text style={[localStyles.cardDesc, { color: theme.colors.mutedText }]}>
+              Insights que impulsionam seu amanhã. Resultados explicáveis e personalizados.
+            </Text>
+
+            <View style={localStyles.badgeRow}>
+              <View style={[localStyles.badge, { backgroundColor: '#144dcf' }]}>
+                <Text style={localStyles.badgeTextLight}>Tendências</Text>
+              </View>
+              <View style={[localStyles.badge, { backgroundColor: '#4dff4a' }]}>
+                <Text style={localStyles.badgeTextDark}>Empregos verdes</Text>
+              </View>
+              <View style={[localStyles.badge, { backgroundColor: '#eded53' }]}>
+                <Text style={localStyles.badgeTextDark}>Reskilling</Text>
+              </View>
+              <View style={[localStyles.badge, { backgroundColor: '#ff443e' }]}>
+                <Text style={localStyles.badgeTextLight}>Alerta</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* CTA principal */}
+        <TouchableOpacity
+          style={[
+            localStyles.cta,
+            { backgroundColor: theme.colors.primary },
+          ]}
+        >
+          <Text style={[localStyles.ctaText, { color: theme.colors.primaryText }]}>
+            Explorar recomendações
+          </Text>
+        </TouchableOpacity>
+
+        {/* Espaço final */}
+        <View style={{ height: 24 }} />
       </ScrollView>
     </AppLayout>
   );

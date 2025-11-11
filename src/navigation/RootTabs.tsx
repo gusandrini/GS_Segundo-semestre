@@ -2,41 +2,40 @@ import { useTheme } from '@/context/ThemeContext';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
-// Screens
-import Cadastro from '@/screens/Cadastro'; // ou '@/screens/CadastroFuncionario'
+
+import Cadastro from '@/screens/Cadastro';
 import Home from '@/screens/Home';
 import SobreApp from '@/screens/SobreApp';
 import SobreSolucao from '@/screens/SobreSolucao';
 
+export type RootTabParamList = {
+  Home: undefined;
+  SobreApp: undefined;
+  SobreSolucao: undefined;
+  Cadastro: undefined;
+};
 
-
-// Header personalizado
-import { Header } from '@/components/Header';
-
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export function RootTabs() {
   const { theme } = useTheme();
 
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        header: () => <Header title={route.name} />, // Header global
-        tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
-          height: theme.sizes.footer,
-          paddingBottom: 4,
-        },
+      initialRouteName="Home"
+      backBehavior="history"
+      // Usar o background do tema nas transições (sem flicker)
+      sceneContainerStyle={{ backgroundColor: theme.colors.background }}
+      // Header/TabBar nativos ocultos (AppLayout renderiza Header/Footer custom)
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { display: 'none' },
+        lazy: true,
+        unmountOnBlur: false,
+        // Mantidas as cores caso no futuro você queira reativar a tab bar nativa
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.mutedText,
-        tabBarIcon: ({ color, size }) => {
-          let icon: keyof typeof Ionicons.glyphMap = 'home-outline';
-          if (route.name === 'SobreNos') icon = 'information-circle-outline';
-          if (route.name === 'Cadastro') icon = 'person-outline';
-          return <Ionicons name={icon} color={color} size={size} />;
-        },
-      })}
+      }}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="SobreApp" component={SobreApp} />

@@ -1,7 +1,16 @@
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { RootTabs } from './RootTabs';
+
 import { useTheme } from '@/context/ThemeContext';
+
+// Screens de fluxo inicial
+import Cadastro from '@/screens/Cadastro';
+import Login from '@/screens/Login';
+import Splash from '@/screens/Splash';
+import { RootTabs } from './RootTabs';
+
+const Stack = createNativeStackNavigator();
 
 export function AppNavigation() {
   const { theme } = useTheme();
@@ -22,7 +31,12 @@ export function AppNavigation() {
 
   return (
     <NavigationContainer theme={navigationTheme}>
-      <RootTabs />
+      <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={Splash} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Cadastro" component={Cadastro} />
+        <Stack.Screen name="Tabs" component={RootTabs} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

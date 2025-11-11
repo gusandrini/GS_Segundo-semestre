@@ -16,8 +16,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/context/ThemeContext';
 
-import { addFuncionario } from '@/api/funcionario';
-import { FuncionarioCad } from '@/models/funcionarioCad';
+import { add } from '@/api'; // sem barra no final
+
 
 import { styles } from '@/styles/screens/Cadastro';
 
@@ -43,7 +43,7 @@ export default function CadastroFuncionario({ navigation }: any) {
       return;
     }
 
-    const payload: FuncionarioCad = {
+    const payload: add = {
       idFuncionario: 0,
       idFilial: idFilial ? Number(idFilial) : 0,
       nome,
@@ -54,7 +54,7 @@ export default function CadastroFuncionario({ navigation }: any) {
 
     try {
       setLoading(true);
-      await addFuncionario(payload);
+      await add(payload);
       Alert.alert('Sucesso', 'Funcionário cadastrado com sucesso!', [
         { text: 'OK', onPress: () => navigation.replace('Login') },
       ]);

@@ -8,13 +8,13 @@ import { useTheme } from '@/context/ThemeContext';
 import { AppLayout } from '@/layout/AppLayout';
 import { styles } from '@/styles/screens/Perfil';
 
-import { getFuncionario } from '@/api/funcionario';
-import { Funcionario } from '@/models/funcionario';
+import { getCliente } from '@/api';
+import type { Cliente } from '@/types/cliente';
 
 export default function Perfil() {
   const { theme } = useTheme();
   const navigation = useNavigation();
-  const [funcionario, setFuncionario] = useState<Funcionario | null>(null);
+  const [funcionario, setFuncionario] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchFuncionario = async () => {
@@ -26,9 +26,12 @@ export default function Perfil() {
         return;
       }
 
-      const response = await getFuncionario(userId);
-      setFuncionario(response.data);
+      const response = await getCliente(userId);
+      // se seu mock retornar { data: Cliente }, mantenha .data;
+      // se retornar Cliente direto, use setFuncionario(response);
+      setFuncionario(response.data ?? response);
     } catch (error) {
+      console.error(error);
       Alert.alert('Erro', 'Não foi possível carregar seus dados.');
     } finally {
       setLoading(false);
@@ -50,7 +53,7 @@ export default function Perfil() {
   };
 
   return (
-    <AppLayout title="Perfil" activeScreen="Cadastro">
+    <AppLayout title="Perfil" activeScreen="Perfil">
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={[styles.title, { color: theme.colors.primary }]}>Meu Perfil</Text>
 
@@ -66,21 +69,21 @@ export default function Perfil() {
             <InfoRow
               icon="person-outline"
               label="Nome"
-              value={funcionario.nome}
+              value={funcionario.nome ?? '—'}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
             <InfoRow
               icon="mail-outline"
               label="E-mail corporativo"
-              value={funcionario.emailCorporativo}
+              value={funcionario.emailCorporativo ?? '—'}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
             <InfoRow
               icon="briefcase-outline"
               label="Cargo"
-              value={funcionario.cargo}
+              value={funcionario.cargo ?? '—'}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />

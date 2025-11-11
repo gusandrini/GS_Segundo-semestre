@@ -31,7 +31,7 @@ export function AppNavigation() {
 
   return (
     <NavigationContainer theme={navigationTheme}>
-      <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Cadastro" component={Cadastro} />

@@ -26,7 +26,7 @@ export default function SobreSolucao() {
           <View style={{ marginBottom: 12 }}>
             <Text style={[styles.title, { color: theme.colors.primary }]}>Sobre a Solução</Text>
             <Text style={[styles.subtitle, { color: theme.colors.mutedText }]}>
-              Explicação clara do propósito e funcionamento do CareerShift AI
+              Explicação clara do propósito e funcionamento do Nexo
             </Text>
           </View>
 

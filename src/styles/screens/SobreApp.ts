@@ -4,87 +4,87 @@ export const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-
   container: {
-    padding: 20,
+    paddingHorizontal: 16,
+    gap: 16, // controla o espaço entre cards
   },
 
+  // Títulos da página
   title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+    marginTop: 10,
   },
-
   subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 24,
-    opacity: 0.8,
+    marginTop: 2,
+    fontSize: 13,
+    fontWeight: '400',
   },
 
-  section: {
+  // Card base
+  card: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    gap: 10,
+  },
+  cardHeader: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 24,
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 2,
   },
-
-  icon: {
-    marginRight: 12,
-    marginTop: 4,
-  },
-
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 6,
-  },
-
-  text: {
-    flex: 1,
+  cardTitle: {
     fontSize: 16,
-    lineHeight: 22,
+    fontWeight: '600',
   },
 
-  // ====== Tabela (Desenvolvido por) ======
+  // Key-Value list (Informações do Sistema)
+  kvList: { gap: 4 },
+  kvItem: { fontSize: 14, lineHeight: 20 },
+  kvKey: { fontWeight: '500', opacity: 0.9 },
+  kvVal: { fontWeight: '600' },
+
+  // Tabela (Desenvolvido por)
+  table: {
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
   tableHeader: {
     flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
-    paddingBottom: 6,
   },
-
-  tableHeaderText: {
-    fontSize: 14,
-    fontWeight: '700',
-    textAlign: 'left',
+  th: {
+    fontSize: 12,
+    fontWeight: '600',
   },
-
-  tableRow: {
+  tr: {
     flexDirection: 'row',
-    paddingVertical: 6,
-    borderBottomWidth: 0.5,
-    borderColor: '#ddd',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+  },
+  td: {
+    fontSize: 13,
   },
 
-  tableText: {
-    fontSize: 14,
-  },
-
-  // ====== Botão Voltar ======
-  backButton: {
+  // Tags (Tecnologias)
+  tagsWrap: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 12,
-    paddingVertical: 14,
-    borderWidth: 1,
-    marginTop: 24,
+    flexWrap: 'wrap',
     gap: 8,
   },
-
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
+  tag: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
+  tagText: {
+    fontSize: 12,
+    fontWeight: '500',
   },
 });

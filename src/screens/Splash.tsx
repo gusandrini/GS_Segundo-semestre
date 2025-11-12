@@ -1,27 +1,42 @@
 import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/context/ThemeContext';
 import { styles } from '@/styles/screens/Splash';
 
+
+
 export default function Splash() {
   const navigation = useNavigation();
   const { theme } = useTheme();
+
+  // usa a logo recebida por props ou um fallback local
+  const logo = require('@/assets/NEXO.png');
+
 
   const version = Constants.expoConfig?.version ?? '1.0.0';
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: theme.colors.background }]}>
       <View style={styles.container}>
-        {/* Logo / Marca (use sua imagem aqui se tiver) */}
-        <View style={styles.logoWrap}>
-          {/* Exemplo com texto de marca caso não tenha logo */}
-          {/* <Image source={require('@/assets/logo.png')} style={styles.logo} resizeMode="contain" /> */}
-          <Text style={[styles.appName, { color: theme.colors.primary }]}>CareerShift AI</Text>
-        </View>
+        {/* Logo / Marca */}
+        <Image
+          source={logo}
+          style={{
+            width: 150,
+            height: 150,
+            resizeMode: 'contain',
+            alignSelf: 'center',
+          }}
+        />
 
         {/* Frase principal */}
         <Text style={[styles.headline, { color: theme.colors.text }]}>

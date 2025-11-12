@@ -1,74 +1,75 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
+  screen: { flex: 1 },
 
   container: {
-    padding: 20,
+    paddingHorizontal: 16,
+    gap: 16, // controla espaço entre cards
   },
 
+  // Títulos da página
   title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+    marginTop: 10,
   },
-
   subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 24,
-    opacity: 0.8,
+    marginTop: 2,
+    fontSize: 13,
+    fontWeight: '400',
   },
 
-  section: {
+  // Card base
+  card: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    gap: 10,
+  },
+  cardHeader: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 24,
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 2,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 
-  icon: {
-    marginRight: 12,
-    marginTop: 4,
-  },
-
+  // Texto
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 8,
   },
-
   text: {
-    flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 22,
   },
 
   // Citações/blockquote
   quoteBox: {
-    borderLeftWidth: 3,
-    paddingLeft: 12,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
   },
-
   quoteText: {
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 22,
-    opacity: 0.9,
+    opacity: 0.95,
   },
 
   // Lista simples (bullets)
-  list: {
-    gap: 6,
-  },
-
+  list: { gap: 6 },
   listItem: {
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 22,
   },
 
-  // Botão Voltar
+  // Botão (se quiser usar depois)
   backButton: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -79,7 +80,6 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     gap: 8,
   },
-
   buttonText: {
     fontSize: 16,
     fontWeight: '600',

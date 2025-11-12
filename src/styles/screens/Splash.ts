@@ -1,3 +1,4 @@
+// src/styles/screens/Splash.ts
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -6,62 +7,56 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 32,
-    alignItems: 'center',
+    paddingHorizontal: 30,
+    //paddingBottom: 100,
     justifyContent: 'space-between',
   },
 
-  // Topo (logo + nome)
-  logoWrap: {
-    width: '100%',
+  // Centro: logo + mensagens
+  centerBlock: {
+    flexGrow: 1,
     alignItems: 'center',
-    marginTop: 24,
+    justifyContent: 'center',
+    paddingHorizontal: 4,
   },
   logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 12,
+    width: 160,
+    height: 160,
+    marginBottom: 16,
   },
-  appName: {
-    fontSize: 28,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-
-  // Mensagens
   headline: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 24,
+    fontWeight: '800',
     textAlign: 'center',
-    marginTop: 12,
+    letterSpacing: 0.2,
   },
   subtext: {
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 10,
     lineHeight: 22,
-    opacity: 0.9,
+    marginTop: 10,
+    opacity: 0.95,
+    maxWidth: 380,
   },
 
-  // Ações
+  // Ações no rodapé
   actions: {
     width: '100%',
-    marginTop: 24,
     gap: 12,
   },
   primaryBtn: {
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 16,
+    borderRadius: 14,
     alignItems: 'center',
   },
   primaryBtnText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: 0.2,
   },
   secondaryBtn: {
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 16,
+    borderRadius: 14,
     borderWidth: 1.5,
     alignItems: 'center',
   },
@@ -70,9 +65,11 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  // Rodapé
   version: {
     fontSize: 12,
-    marginBottom: 12,
+    textAlign: 'center',
+    marginTop: 200,
+    marginBottom: 4,
+    opacity: 0.8,
   },
 });

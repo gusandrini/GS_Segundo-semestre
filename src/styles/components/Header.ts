@@ -5,22 +5,20 @@ export const styles = StyleSheet.create({
     height: 56,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center', 
     paddingHorizontal: 12,
-    borderBottomWidth: 1,
   },
   iconLeft: {
-    width: 32,
+    width: 40,
     alignItems: 'flex-start',
   },
   iconRight: {
-    width: 32,
+    width: 40,
     alignItems: 'flex-end',
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
-    flex: 1,
   },
 });

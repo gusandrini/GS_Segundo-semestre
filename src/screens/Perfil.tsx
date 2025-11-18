@@ -8,30 +8,41 @@ import { useTheme } from '@/context/ThemeContext';
 import { AppLayout } from '@/layout/AppLayout';
 import { styles } from '@/styles/screens/Perfil';
 
-import { getCliente } from '@/api';
-import type { Cliente } from '@/types/cliente';
+import { getUsuario } from '@/api/usuario';
+import type { Usuario } from '@/models/usuario';
 
 export default function Perfil() {
   const { theme } = useTheme();
   const navigation = useNavigation();
-  const [funcionario, setFuncionario] = useState<Cliente | null>(null);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchFuncionario = async () => {
+  const fetchUsuario = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
+
+      // Se não tiver usuário salvo, manda pra Cadastro (ou Login, se preferir)
       if (!userId) {
-        Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-        (navigation as any).reset({ index: 0, routes: [{ name: 'Login' }] });
+        (navigation as any).reset({
+          index: 0,
+          routes: [{ name: 'Cadastro' }],
+        });
         return;
       }
 
-      const response = await getCliente(userId);
-      // se seu mock retornar { data: Cliente }, mantenha .data;
-      // se retornar Cliente direto, use setFuncionario(response);
-      setFuncionario(response.data ?? response);
+      const idNumber = Number(userId);
+      if (Number.isNaN(idNumber)) {
+        (navigation as any).reset({
+          index: 0,
+          routes: [{ name: 'Cadastro' }],
+        });
+        return;
+      }
+
+      const response = await getUsuario(idNumber);
+      setUsuario(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('[Perfil][fetchUsuario] Erro ao carregar usuário:', error);
       Alert.alert('Erro', 'Não foi possível carregar seus dados.');
     } finally {
       setLoading(false);
@@ -39,18 +50,28 @@ export default function Perfil() {
   };
 
   useEffect(() => {
-    fetchFuncionario();
+    fetchUsuario();
   }, []);
 
   const handleLogout = async () => {
     try {
       await AsyncStorage.multiRemove(['userId', 'token']);
-      setFuncionario(null);
-      (navigation as any).reset({ index: 0, routes: [{ name: 'Login' }] });
-    } catch (error) {
-      Alert.alert('Erro', 'Falha ao sair da conta. Tente novamente.');
-    }
+    } catch {}
+    setUsuario(null);
+    (navigation as any).reset({ index: 0, routes: [{ name: 'Login' }] });
   };
+
+  // transforma array de Função em string
+  const funcoesText =
+    usuario?.funcoes && usuario.funcoes.length > 0
+      ? usuario.funcoes.map((f) => f.nmFuncao).join(', ')
+      : '—';
+
+  // senha mascarada (opcional, só pra não mostrar a senha real)
+  const senhaMascarada =
+    usuario?.nmSenha && usuario.nmSenha.length > 0
+      ? '•'.repeat(Math.max(usuario.nmSenha.length, 8))
+      : '—';
 
   return (
     <AppLayout title="Perfil" activeScreen="Perfil">
@@ -59,7 +80,7 @@ export default function Perfil() {
 
         {loading ? (
           <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginTop: 20 }} />
-        ) : funcionario ? (
+        ) : usuario ? (
           <View
             style={[
               styles.card,
@@ -69,21 +90,28 @@ export default function Perfil() {
             <InfoRow
               icon="person-outline"
               label="Nome"
-              value={funcionario.nome ?? '—'}
+              value={usuario.nmCliente ?? '—'}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
             <InfoRow
               icon="mail-outline"
-              label="E-mail corporativo"
-              value={funcionario.emailCorporativo ?? '—'}
+              label="E-mail"
+              value={usuario.nmEmail ?? '—'}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
             <InfoRow
               icon="briefcase-outline"
-              label="Cargo"
-              value={funcionario.cargo ?? '—'}
+              label="Funções"
+              value={funcoesText}
+              colorPrimary={theme.colors.primary}
+              colorText={theme.colors.text}
+            />
+            <InfoRow
+              icon="lock-closed-outline"
+              label="Senha"
+              value={senhaMascarada}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />

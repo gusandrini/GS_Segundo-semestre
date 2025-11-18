@@ -1,12 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import apiClient from "../api/apiClient";
+import { Usuario } from "../models/usuario";
 
-interface User {
-  idFuncionario: number;
-  nome: string;
-  email: string;
-  cargo: string;
+interface User extends Usuario {
+  token: string;
 }
 
 interface SessionContextType {
@@ -23,35 +21,60 @@ const SessionProvider = ({ children }: PropsWithChildren) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await apiClient.post("/auth/login", { email, password });
+      // 🔹 Se o backend espera "username" (muito comum em Spring Security):
+      const payload = { username: email, password };
+      // Se ele realmente espera "email", troca pra: { email, password }
 
-      const { token, idFuncionario, nome, email: userEmail, cargo } = response.data;
+      const response = await apiClient.post("/auth/login", payload);
 
+      // 🔹 Esperando algo como: { token, usuario }
+      const { token, usuario } = response.data as {
+        token: string;
+        usuario: Usuario;
+      };
+
+      const userData: User = {
+        ...usuario,
+        token,
+      };
+
+      // 🔹 Salva no AsyncStorage
       await AsyncStorage.setItem("token", token);
-      await AsyncStorage.setItem("userId", idFuncionario.toString());
+      await AsyncStorage.setItem("user", JSON.stringify(userData));
+      if (usuario.idUsuario != null) {
+        await AsyncStorage.setItem("userId", usuario.idUsuario.toString());
+      }
 
-      setUser({ idFuncionario, nome, email: userEmail, cargo });
+      setUser(userData);
 
       return true;
     } catch (error: any) {
-      
       if (error.response && error.response.status === 401) {
+        // credenciais inválidas
         return false;
       }
 
-      console.error("Erro inesperado no login:", error);
+      console.error("[SessionProvider][login] Erro inesperado no login:", error);
       return false;
     }
   };
 
   const logout = async () => {
     await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem("user");
     await AsyncStorage.removeItem("userId");
     setUser(null);
   };
 
   return (
-    <SessionContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+    <SessionContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        login,
+        logout,
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );

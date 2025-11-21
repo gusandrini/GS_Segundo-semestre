@@ -20,7 +20,7 @@ import type { Usuario } from '@/models/usuario';
 import { useSession } from '@/services/SessionProvider';
 
 export default function Perfil() {
-  const { theme } = useTheme();
+  const { theme, isDark, toggleTheme } = useTheme(); // <-- CORRIGIDO AQUI
   const navigation = useNavigation();
   const { logout: logoutSession } = useSession();
 
@@ -31,12 +31,10 @@ export default function Perfil() {
     try {
       console.log('🔹 [Perfil] Iniciando fetchUsuario');
 
-      // 1) pega o id salvo pelo login
       const userId = await AsyncStorage.getItem('userId');
       console.log('🔹 [Perfil] userId do AsyncStorage:', userId);
 
       if (!userId) {
-        console.warn('⚠ [Perfil] Nenhum userId encontrado, voltando para Login');
         (navigation as any).reset({
           index: 0,
           routes: [{ name: 'Login' }],
@@ -45,23 +43,14 @@ export default function Perfil() {
       }
 
       const idNumber = Number(userId);
-      if (Number.isNaN(idNumber)) {
-        console.warn('⚠ [Perfil] userId inválido:', userId);
-        (navigation as any).reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-        return;
-      }
+      console.log('🔹 Buscando usuário por ID:', idNumber);
 
-      // 2) chama a API: GET /api/usuarios/{id}
-      console.log('🔹 [Perfil] Chamando API getUsuario com id:', idNumber);
       const response = await getUsuario(idNumber);
-      console.log('✅ [Perfil] Resposta da API:', response.data);
+      console.log('✅ Usuário carregado:', response.data);
 
       setUsuario(response.data);
     } catch (error) {
-      console.error('[Perfil][fetchUsuario] Erro ao carregar usuário:', error);
+      console.error('[Perfil][fetchUsuario] Erro:', error);
       Alert.alert('Erro', 'Não foi possível carregar seus dados.');
     } finally {
       setLoading(false);
@@ -76,7 +65,7 @@ export default function Perfil() {
     try {
       await logoutSession();
     } catch (e) {
-      console.error('[Perfil][logout] Erro ao sair:', e);
+      console.error('[Perfil][logout] Erro:', e);
     }
 
     (navigation as any).reset({
@@ -103,35 +92,30 @@ export default function Perfil() {
         </Text>
 
         {loading ? (
-          <ActivityIndicator
-            size="large"
-            color={theme.colors.primary}
-            style={{ marginTop: 20 }}
-          />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         ) : usuario ? (
           <View
             style={[
               styles.card,
-              {
-                backgroundColor: theme.colors.surface,
-                borderColor: theme.colors.border,
-              },
+              { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
             ]}
           >
             <InfoRow
               icon="person-outline"
               label="Nome"
-              value={usuario.nmCliente ?? '—'}
+              value={usuario.nmCliente}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
+
             <InfoRow
               icon="mail-outline"
               label="E-mail"
-              value={usuario.nmEmail ?? '—'}
+              value={usuario.nmEmail}
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
+
             <InfoRow
               icon="briefcase-outline"
               label="Funções"
@@ -146,44 +130,46 @@ export default function Perfil() {
           </Text>
         )}
 
+        {/* 🔥 SWITCH DE TEMA FUNCIONANDO */}
+        <View style={styles.switchRow}>
+          <TouchableOpacity
+            style={[styles.switchBtn, { backgroundColor: theme.colors.surface }]}
+            onPress={toggleTheme}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name={isDark ? 'sunny-outline' : 'moon-outline'}
+              size={18}
+              color={theme.colors.text}
+            />
+            <Text style={[styles.switchText, { color: theme.colors.text }]}>
+              {isDark ? 'Modo claro' : 'Modo escuro'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ----------------- AÇÕES: EDITAR E SAIR ----------------- */}
         <View style={styles.actions}>
-          {/* Botão editar/atualizar dados */}
           <TouchableOpacity
             onPress={handleEdit}
             activeOpacity={0.85}
             style={[
               styles.logoutBtn,
-              {
-                backgroundColor: theme.colors.surface,
-                borderWidth: 1,
-                borderColor: theme.colors.primary,
-                marginBottom: 10,
-              },
+              { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary, borderWidth: 1 },
             ]}
           >
-            <Ionicons
-              name="create-outline"
-              size={18}
-              color={theme.colors.primary}
-              style={{ marginRight: 6 }}
-            />
+            <Ionicons name="create-outline" size={18} color={theme.colors.primary} />
             <Text style={[styles.logoutText, { color: theme.colors.primary }]}>
               Atualizar dados
             </Text>
           </TouchableOpacity>
 
-          {/* Botão logout */}
           <TouchableOpacity
             onPress={handleLogout}
             activeOpacity={0.85}
             style={[styles.logoutBtn, { backgroundColor: '#ff3b30' }]}
           >
-            <Ionicons
-              name="log-out-outline"
-              size={18}
-              color="#fff"
-              style={{ marginRight: 6 }}
-            />
+            <Ionicons name="log-out-outline" size={18} color="#fff" />
             <Text style={styles.logoutText}>Sair da conta</Text>
           </TouchableOpacity>
         </View>
@@ -192,19 +178,7 @@ export default function Perfil() {
   );
 }
 
-function InfoRow({
-  icon,
-  label,
-  value,
-  colorPrimary,
-  colorText,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  value: string;
-  colorPrimary: string;
-  colorText: string;
-}) {
+function InfoRow({ icon, label, value, colorPrimary, colorText }) {
   return (
     <View style={styles.row}>
       <Ionicons name={icon} size={18} color={colorPrimary} style={styles.rowIcon} />

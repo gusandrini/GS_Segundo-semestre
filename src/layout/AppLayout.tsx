@@ -42,7 +42,7 @@ export function AppLayout({
           { label: 'Home',       icon: 'home-outline',                 screen: 'Home' },
           { label: 'Sobre App',  icon: 'information-circle-outline',   screen: 'SobreApp' },
           { label: 'Solução',    icon: 'bulb-outline',                 screen: 'SobreSolucao' },
-          { label: 'Perfil',     icon: 'person-outline',               screen: 'Cadastro' },
+          { label: 'Perfil',     icon: 'person-outline',               screen: 'Perfil' },
         ]}
       />
     </View>

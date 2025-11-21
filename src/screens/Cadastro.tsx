@@ -14,61 +14,66 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { addUsuario } from '@/api/usuario';
 import { useTheme } from '@/context/ThemeContext';
-
-import { add } from '@/api'; // sem barra no final
-
-
+import { Usuario } from '@/models/usuario';
 import { styles } from '@/styles/screens/Cadastro';
 
-export default function CadastroFuncionario({ navigation }: any) {
+export default function CadastroUsuario({ navigation }: any) {
   const { theme } = useTheme();
 
   const [nome, setNome] = useState('');
-  const [emailCorporativo, setEmailCorporativo] = useState('');
+  const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [cargo, setCargo] = useState('');
-  const [idFilial, setIdFilial] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const validarEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const validarEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const handleSave = async () => {
-    if (!nome || !emailCorporativo || !senha || !cargo) {
+    if (!nome || !email || !senha) {
       Alert.alert('Erro', 'Todos os campos obrigatórios devem ser preenchidos.');
       return;
     }
-    if (!validarEmail(emailCorporativo)) {
+
+    if (!validarEmail(email)) {
       Alert.alert('Erro', 'E-mail inválido.');
       return;
     }
 
-    const payload: add = {
-      idFuncionario: 0,
-      idFilial: idFilial ? Number(idFilial) : 0,
-      nome,
-      emailCorporativo,
-      senhaHash: senha,
-      cargo,
+    // Payload NO FORMATO do seu backend
+    const payload: Omit<Usuario, 'idUsuario'> = {
+      nmCliente: nome,
+      nmEmail: email,
+      nmSenha: senha,
+      // funcoes: [] // se quiser enviar depois
     };
 
     try {
       setLoading(true);
-      await add(payload);
-      Alert.alert('Sucesso', 'Funcionário cadastrado com sucesso!', [
-        { text: 'OK', onPress: () => navigation.replace('Login') },
+      await addUsuario(payload);
+
+      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!', [
+        { text: 'OK', onPress: () => navigation.navigate('Login') },
       ]);
+
       setNome('');
-      setEmailCorporativo('');
+      setEmail('');
       setSenha('');
-      setCargo('');
-      setIdFilial('');
     } catch (error: any) {
+      console.error('[CadastroUsuario] Erro ao cadastrar:', error);
+
       if (error?.response) {
         if (error.response.status === 401) {
-          Alert.alert('Não autorizado', 'Você não tem permissão para realizar esta ação.');
+          Alert.alert(
+            'Não autorizado',
+            'Você não tem permissão para realizar esta ação.'
+          );
         } else if (error.response.status === 403) {
-          Alert.alert('Acesso negado', 'Acesso proibido para este usuário.');
+          Alert.alert(
+            'Acesso negado',
+            'Acesso proibido para este usuário.'
+          );
         } else {
           const msg =
             error.response.data?.message ||
@@ -85,12 +90,16 @@ export default function CadastroFuncionario({ navigation }: any) {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       {/* overlay de carregamento */}
       <Modal transparent visible={loading}>
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={[styles.loadingText, { color: theme.colors.text }]}>Salvando...</Text>
+          <Text style={[styles.loadingText, { color: theme.colors.text }]}>
+            Salvando...
+          </Text>
         </View>
       </Modal>
 
@@ -99,9 +108,14 @@ export default function CadastroFuncionario({ navigation }: any) {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       >
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+        >
           {/* Nome */}
-          <Text style={[styles.label, { color: theme.colors.text }]}>Nome</Text>
+          <Text style={[styles.label, { color: theme.colors.text }]}>
+            Nome
+          </Text>
           <TextInput
             style={[
               styles.input,
@@ -113,12 +127,14 @@ export default function CadastroFuncionario({ navigation }: any) {
             ]}
             value={nome}
             onChangeText={setNome}
-            placeholder="Digite o nome"
+            placeholder="Digite seu nome"
             placeholderTextColor={theme.colors.mutedText}
           />
 
-          {/* Email corporativo */}
-          <Text style={[styles.label, { color: theme.colors.text }]}>E-mail corporativo</Text>
+          {/* E-mail */}
+          <Text style={[styles.label, { color: theme.colors.text }]}>
+            E-mail
+          </Text>
           <TextInput
             style={[
               styles.input,
@@ -128,16 +144,18 @@ export default function CadastroFuncionario({ navigation }: any) {
                 backgroundColor: theme.colors.surface,
               },
             ]}
-            value={emailCorporativo}
-            onChangeText={setEmailCorporativo}
+            value={email}
+            onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
-            placeholder="exemplo@empresa.com"
+            placeholder="exemplo@dominio.com"
             placeholderTextColor={theme.colors.mutedText}
           />
 
           {/* Senha */}
-          <Text style={[styles.label, { color: theme.colors.text }]}>Senha</Text>
+          <Text style={[styles.label, { color: theme.colors.text }]}>
+            Senha
+          </Text>
           <TextInput
             style={[
               styles.input,
@@ -150,42 +168,7 @@ export default function CadastroFuncionario({ navigation }: any) {
             value={senha}
             onChangeText={setSenha}
             secureTextEntry
-            placeholder="Digite a senha"
-            placeholderTextColor={theme.colors.mutedText}
-          />
-
-          {/* Cargo */}
-          <Text style={[styles.label, { color: theme.colors.text }]}>Cargo</Text>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-                backgroundColor: theme.colors.surface,
-              },
-            ]}
-            value={cargo}
-            onChangeText={setCargo}
-            placeholder="Digite o cargo"
-            placeholderTextColor={theme.colors.mutedText}
-          />
-
-          {/* Id Filial (opcional) */}
-          <Text style={[styles.label, { color: theme.colors.text }]}>ID da Filial (opcional)</Text>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-                backgroundColor: theme.colors.surface,
-              },
-            ]}
-            value={idFilial}
-            onChangeText={setIdFilial}
-            keyboardType="numeric"
-            placeholder="Ex: 1"
+            placeholder="Digite sua senha"
             placeholderTextColor={theme.colors.mutedText}
           />
 
@@ -197,8 +180,10 @@ export default function CadastroFuncionario({ navigation }: any) {
             activeOpacity={0.8}
           >
             <Ionicons name="save" size={20} color={theme.colors.primaryText} />
-            <Text style={[styles.buttonText, { color: theme.colors.primaryText }]}>
-              Salvar Funcionário
+            <Text
+              style={[styles.buttonText, { color: theme.colors.primaryText }]}
+            >
+              Criar conta
             </Text>
           </TouchableOpacity>
         </ScrollView>

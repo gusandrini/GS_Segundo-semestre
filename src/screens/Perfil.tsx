@@ -2,7 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { useTheme } from '@/context/ThemeContext';
 import { AppLayout } from '@/layout/AppLayout';
@@ -10,36 +17,48 @@ import { styles } from '@/styles/screens/Perfil';
 
 import { getUsuario } from '@/api/usuario';
 import type { Usuario } from '@/models/usuario';
+import { useSession } from '@/services/SessionProvider';
 
 export default function Perfil() {
   const { theme } = useTheme();
   const navigation = useNavigation();
+  const { logout: logoutSession } = useSession();
+
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchUsuario = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
+      console.log('🔹 [Perfil] Iniciando fetchUsuario');
 
-      // Se não tiver usuário salvo, manda pra Cadastro (ou Login, se preferir)
+      // 1) pega o id salvo pelo login
+      const userId = await AsyncStorage.getItem('userId');
+      console.log('🔹 [Perfil] userId do AsyncStorage:', userId);
+
       if (!userId) {
+        console.warn('⚠ [Perfil] Nenhum userId encontrado, voltando para Login');
         (navigation as any).reset({
           index: 0,
-          routes: [{ name: 'Cadastro' }],
+          routes: [{ name: 'Login' }],
         });
         return;
       }
 
       const idNumber = Number(userId);
       if (Number.isNaN(idNumber)) {
+        console.warn('⚠ [Perfil] userId inválido:', userId);
         (navigation as any).reset({
           index: 0,
-          routes: [{ name: 'Cadastro' }],
+          routes: [{ name: 'Login' }],
         });
         return;
       }
 
+      // 2) chama a API: GET /api/usuarios/{id}
+      console.log('🔹 [Perfil] Chamando API getUsuario com id:', idNumber);
       const response = await getUsuario(idNumber);
+      console.log('✅ [Perfil] Resposta da API:', response.data);
+
       setUsuario(response.data);
     } catch (error) {
       console.error('[Perfil][fetchUsuario] Erro ao carregar usuário:', error);
@@ -55,36 +74,48 @@ export default function Perfil() {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.multiRemove(['userId', 'token']);
-    } catch {}
-    setUsuario(null);
-    (navigation as any).reset({ index: 0, routes: [{ name: 'Login' }] });
+      await logoutSession();
+    } catch (e) {
+      console.error('[Perfil][logout] Erro ao sair:', e);
+    }
+
+    (navigation as any).reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
-  // transforma array de Função em string
+  const handleEdit = () => {
+    if (!usuario) return;
+    (navigation as any).navigate('Cadastro', { usuario });
+  };
+
   const funcoesText =
     usuario?.funcoes && usuario.funcoes.length > 0
       ? usuario.funcoes.map((f) => f.nmFuncao).join(', ')
       : '—';
 
-  // senha mascarada (opcional, só pra não mostrar a senha real)
-  const senhaMascarada =
-    usuario?.nmSenha && usuario.nmSenha.length > 0
-      ? '•'.repeat(Math.max(usuario.nmSenha.length, 8))
-      : '—';
-
   return (
     <AppLayout title="Perfil" activeScreen="Perfil">
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={[styles.title, { color: theme.colors.primary }]}>Meu Perfil</Text>
+        <Text style={[styles.title, { color: theme.colors.primary }]}>
+          Meu Perfil
+        </Text>
 
         {loading ? (
-          <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginTop: 20 }} />
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.primary}
+            style={{ marginTop: 20 }}
+          />
         ) : usuario ? (
           <View
             style={[
               styles.card,
-              { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+              {
+                backgroundColor: theme.colors.surface,
+                borderColor: theme.colors.border,
+              },
             ]}
           >
             <InfoRow
@@ -108,13 +139,6 @@ export default function Perfil() {
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
-            <InfoRow
-              icon="lock-closed-outline"
-              label="Senha"
-              value={senhaMascarada}
-              colorPrimary={theme.colors.primary}
-              colorText={theme.colors.text}
-            />
           </View>
         ) : (
           <Text style={[styles.empty, { color: theme.colors.text }]}>
@@ -123,12 +147,43 @@ export default function Perfil() {
         )}
 
         <View style={styles.actions}>
+          {/* Botão editar/atualizar dados */}
+          <TouchableOpacity
+            onPress={handleEdit}
+            activeOpacity={0.85}
+            style={[
+              styles.logoutBtn,
+              {
+                backgroundColor: theme.colors.surface,
+                borderWidth: 1,
+                borderColor: theme.colors.primary,
+                marginBottom: 10,
+              },
+            ]}
+          >
+            <Ionicons
+              name="create-outline"
+              size={18}
+              color={theme.colors.primary}
+              style={{ marginRight: 6 }}
+            />
+            <Text style={[styles.logoutText, { color: theme.colors.primary }]}>
+              Atualizar dados
+            </Text>
+          </TouchableOpacity>
+
+          {/* Botão logout */}
           <TouchableOpacity
             onPress={handleLogout}
             activeOpacity={0.85}
             style={[styles.logoutBtn, { backgroundColor: '#ff3b30' }]}
           >
-            <Ionicons name="log-out-outline" size={18} color="#fff" style={{ marginRight: 6 }} />
+            <Ionicons
+              name="log-out-outline"
+              size={18}
+              color="#fff"
+              style={{ marginRight: 6 }}
+            />
             <Text style={styles.logoutText}>Sair da conta</Text>
           </TouchableOpacity>
         </View>
@@ -154,7 +209,8 @@ function InfoRow({
     <View style={styles.row}>
       <Ionicons name={icon} size={18} color={colorPrimary} style={styles.rowIcon} />
       <Text style={[styles.rowText, { color: colorText }]}>
-        <Text style={[styles.rowLabel, { color: colorPrimary }]}>{label}:</Text> {value}
+        <Text style={[styles.rowLabel, { color: colorPrimary }]}>{label}:</Text>{' '}
+        {value}
       </Text>
     </View>
   );

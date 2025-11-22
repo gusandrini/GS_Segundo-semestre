@@ -20,7 +20,7 @@ import type { Usuario } from '@/models/usuario';
 import { useSession } from '@/services/SessionProvider';
 
 export default function Perfil() {
-  const { theme, isDark, toggleTheme } = useTheme(); // <-- CORRIGIDO AQUI
+  const { theme, isDark, toggleTheme } = useTheme();
   const navigation = useNavigation();
   const { logout: logoutSession } = useSession();
 
@@ -81,23 +81,38 @@ export default function Perfil() {
 
   const funcoesText =
     usuario?.funcoes && usuario.funcoes.length > 0
-      ? usuario.funcoes.map((f) => f.nmFuncao).join(', ')
+      ? usuario.funcoes.map(f => f.nmFuncao).join(', ')
       : '—';
 
   return (
     <AppLayout title="Perfil" activeScreen="Perfil">
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={[styles.title, { color: theme.colors.primary }]}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          { backgroundColor: theme.colors.background },
+        ]}
+      >
+        <Text
+          style={[
+            styles.title,
+            { color: theme.colors.primary },
+          ]}
+        >
           Meu Perfil
         </Text>
 
         {loading ? (
-          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <View style={styles.loadingWrapper}>
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+          </View>
         ) : usuario ? (
           <View
             style={[
               styles.card,
-              { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+              {
+                backgroundColor: theme.colors.surface,
+                borderColor: theme.colors.border,
+              },
             ]}
           >
             <InfoRow
@@ -115,14 +130,6 @@ export default function Perfil() {
               colorPrimary={theme.colors.primary}
               colorText={theme.colors.text}
             />
-
-            <InfoRow
-              icon="briefcase-outline"
-              label="Funções"
-              value={funcoesText}
-              colorPrimary={theme.colors.primary}
-              colorText={theme.colors.text}
-            />
           </View>
         ) : (
           <Text style={[styles.empty, { color: theme.colors.text }]}>
@@ -130,10 +137,16 @@ export default function Perfil() {
           </Text>
         )}
 
-        {/* 🔥 SWITCH DE TEMA FUNCIONANDO */}
+        {/* Troca de tema */}
         <View style={styles.switchRow}>
           <TouchableOpacity
-            style={[styles.switchBtn, { backgroundColor: theme.colors.surface }]}
+            style={[
+              styles.switchBtn,
+              {
+                backgroundColor: theme.colors.surface,
+                borderColor: theme.colors.border,
+              },
+            ]}
             onPress={toggleTheme}
             activeOpacity={0.7}
           >
@@ -142,24 +155,41 @@ export default function Perfil() {
               size={18}
               color={theme.colors.text}
             />
-            <Text style={[styles.switchText, { color: theme.colors.text }]}>
+            <Text
+              style={[
+                styles.switchText,
+                { color: theme.colors.text },
+              ]}
+            >
               {isDark ? 'Modo claro' : 'Modo escuro'}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* ----------------- AÇÕES: EDITAR E SAIR ----------------- */}
+        {/* Ações */}
         <View style={styles.actions}>
           <TouchableOpacity
             onPress={handleEdit}
             activeOpacity={0.85}
             style={[
-              styles.logoutBtn,
-              { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary, borderWidth: 1 },
+              styles.actionBtn,
+              {
+                backgroundColor: theme.colors.surface,
+                borderColor: theme.colors.primary,
+              },
             ]}
           >
-            <Ionicons name="create-outline" size={18} color={theme.colors.primary} />
-            <Text style={[styles.logoutText, { color: theme.colors.primary }]}>
+            <Ionicons
+              name="create-outline"
+              size={18}
+              color={theme.colors.primary}
+            />
+            <Text
+              style={[
+                styles.actionText,
+                { color: theme.colors.primary },
+              ]}
+            >
               Atualizar dados
             </Text>
           </TouchableOpacity>
@@ -167,10 +197,23 @@ export default function Perfil() {
           <TouchableOpacity
             onPress={handleLogout}
             activeOpacity={0.85}
-            style={[styles.logoutBtn, { backgroundColor: '#ff3b30' }]}
+            style={[
+              styles.actionBtn,
+              {
+                backgroundColor: theme.colors.error,
+                borderColor: theme.colors.error,
+              },
+            ]}
           >
-            <Ionicons name="log-out-outline" size={18} color="#fff" />
-            <Text style={styles.logoutText}>Sair da conta</Text>
+            <Ionicons name="log-out-outline" size={18} color={theme.colors.primaryText} />
+            <Text
+              style={[
+                styles.actionText,
+                { color: theme.colors.primaryText },
+              ]}
+            >
+              Sair da conta
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -178,10 +221,27 @@ export default function Perfil() {
   );
 }
 
-function InfoRow({ icon, label, value, colorPrimary, colorText }) {
+function InfoRow({
+  icon,
+  label,
+  value,
+  colorPrimary,
+  colorText,
+}: {
+  icon: any;
+  label: string;
+  value: string;
+  colorPrimary: string;
+  colorText: string;
+}) {
   return (
     <View style={styles.row}>
-      <Ionicons name={icon} size={18} color={colorPrimary} style={styles.rowIcon} />
+      <Ionicons
+        name={icon}
+        size={18}
+        color={colorPrimary}
+        style={styles.rowIcon}
+      />
       <Text style={[styles.rowText, { color: colorText }]}>
         <Text style={[styles.rowLabel, { color: colorPrimary }]}>{label}:</Text>{' '}
         {value}

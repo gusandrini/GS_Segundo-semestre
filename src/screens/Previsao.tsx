@@ -27,16 +27,19 @@ import { predizerMudanca } from '@/api/predicao';
 import { criarDescricao } from '@/api/previsao';
 import { DescricaoClienteDTO } from '@/models/descricao';
 
+import { stylesDescricao } from '@/styles/screens/DescricaoCliente';
+
+
 /* ------------------------ COMPONENTES REUTILIZÁVEIS ------------------------ */
 const InputBase = ({ children }: any) => {
   const { theme } = useTheme();
   return (
-    <View style={{
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      borderRadius: 8,
-      marginBottom: 12,
-    }}>
+    <View
+      style={[
+        stylesDescricao.inputWrapper,
+        { borderColor: theme.colors.border },
+      ]}
+    >
       {children}
     </View>
   );
@@ -46,15 +49,21 @@ const CampoNumerico = ({ label, value, onChangeText, placeholder }: any) => {
   const { theme } = useTheme();
   return (
     <>
-      <Text style={{ marginBottom: 4, color: theme.colors.text }}>{label}</Text>
+      <Text style={[stylesDescricao.label, { color: theme.colors.text }]}>
+        {label}
+      </Text>
+
       <InputBase>
         <TextInput
           keyboardType="numeric"
           value={value != null ? String(value) : ''}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor={theme.colors.muted}
-          style={{ padding: 10, color: theme.colors.text }}
+          placeholderTextColor={theme.colors.mutedText}
+          style={[
+            stylesDescricao.input,
+            { color: theme.colors.text },
+          ]}
         />
       </InputBase>
     </>
@@ -65,18 +74,27 @@ const CampoPicker = ({ label, selected, onChange, opcoes }: any) => {
   const { theme } = useTheme();
   return (
     <>
-      <Text style={{ marginBottom: 4, color: theme.colors.text }}>{label}</Text>
-      <InputBase>
+      <Text style={[stylesDescricao.label, { color: theme.colors.text }]}>
+        {label}
+      </Text>
+
+      <View
+        style={[
+          stylesDescricao.pickerWrapper,
+          { borderColor: theme.colors.border },
+        ]}
+      >
         <Picker selectedValue={selected} onValueChange={v => onChange(v || null)}>
           <Picker.Item label={`Selecione ${label.toLowerCase()}`} value={null} />
           {opcoes.map(o => (
             <Picker.Item key={o.id} label={o.nome} value={o.id} />
           ))}
         </Picker>
-      </InputBase>
+      </View>
     </>
   );
 };
+
 
 /* ------------------------ FORMULÁRIO PRINCIPAL ------------------------ */
 export default function DescricaoClienteForm() {
@@ -114,10 +132,19 @@ export default function DescricaoClienteForm() {
   };
 
   const validate = () => {
-    const obrigatorios = ['idOcupacao', 'idCampoEstudo', 'idNivelEducacional', 'idInfluenciaFamiliar'];
+    const obrigatorios = [
+      'idOcupacao',
+      'idCampoEstudo',
+      'idNivelEducacional',
+      'idInfluenciaFamiliar',
+    ];
+
     for (let campo of obrigatorios) {
       // @ts-ignore
-      if (!form[campo]) return Alert.alert('Atenção', 'Preencha todos os campos obrigatórios.');
+      if (!form[campo]) {
+        Alert.alert('Atenção', 'Preencha todos os campos obrigatórios.');
+        return false;
+      }
     }
     return true;
   };
@@ -147,10 +174,18 @@ export default function DescricaoClienteForm() {
 
   return (
     <AppLayout>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ padding: 16 }}>
-          <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 16, color: theme.colors.text }}>
-            Sobre você
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={stylesDescricao.screen}
+      >
+        <ScrollView contentContainerStyle={stylesDescricao.scroll}>
+          <Text
+            style={[
+              stylesDescricao.title,
+              { color: theme.colors.text },
+            ]}
+          >
+            Informações para previsão de mudança
           </Text>
 
           <CampoPicker
@@ -224,22 +259,33 @@ export default function DescricaoClienteForm() {
           />
 
           {resultado && (
-            <View style={{
-              marginTop: 20,
-              padding: 16,
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: theme.colors.border,
-              backgroundColor: theme.colors.surface,
-            }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: theme.colors.text }}>
+            <View
+              style={[
+                stylesDescricao.resultadoCard,
+                {
+                  borderColor: theme.colors.border,
+                  backgroundColor: theme.colors.surface,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  stylesDescricao.resultadoTitle,
+                  { color: theme.colors.text },
+                ]}
+              >
                 Resultado da previsão
               </Text>
-              <Text style={{ color: theme.colors.text }}>
+
+              <Text style={[stylesDescricao.resultadoText, { color: theme.colors.text }]}>
                 Classe: {resultado.classePrevista ?? '—'}
               </Text>
-              <Text style={{ color: theme.colors.text }}>
-                Probabilidade: {(resultado.probabilidadeMudar * 100).toFixed(1)}%
+
+              <Text style={[stylesDescricao.resultadoText, { color: theme.colors.text }]}>
+                Probabilidade:{' '}
+                {resultado.probabilidadeMudar
+                  ? `${(resultado.probabilidadeMudar * 100).toFixed(1)}%`
+                  : '—'}
               </Text>
             </View>
           )}
@@ -247,18 +293,24 @@ export default function DescricaoClienteForm() {
           <TouchableOpacity
             disabled={loading}
             onPress={handleSubmit}
-            style={{
-              marginTop: 24,
-              backgroundColor: loading ? theme.colors.muted : theme.colors.primary,
-              paddingVertical: 14,
-              borderRadius: 8,
-              alignItems: 'center',
-            }}
+            style={[
+              stylesDescricao.button,
+              {
+                backgroundColor: loading
+                  ? theme.colors.mutedText
+                  : theme.colors.primary,
+              },
+            ]}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={theme.colors.primaryText} />
             ) : (
-              <Text style={{ color: '#fff', fontWeight: '600', fontSize: 16 }}>
+              <Text
+                style={[
+                  stylesDescricao.buttonText,
+                  { color: theme.colors.primaryText },
+                ]}
+              >
                 Enviar e gerar previsão
               </Text>
             )}

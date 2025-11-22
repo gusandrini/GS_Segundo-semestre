@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 16,
-    gap: 16, // controla o espaço entre cards
+    gap: 16, // espaço vertical entre os cards
   },
 
   // Títulos da página
@@ -41,10 +41,20 @@ export const styles = StyleSheet.create({
   },
 
   // Key-Value list (Informações do Sistema)
-  kvList: { gap: 4 },
-  kvItem: { fontSize: 14, lineHeight: 20 },
-  kvKey: { fontWeight: '500', opacity: 0.9 },
-  kvVal: { fontWeight: '600' },
+  kvList: {
+    gap: 4,
+  },
+  kvItem: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  kvKey: {
+    fontWeight: '500',
+    opacity: 0.9,
+  },
+  kvVal: {
+    fontWeight: '600',
+  },
 
   // Tabela (Desenvolvido por)
   table: {

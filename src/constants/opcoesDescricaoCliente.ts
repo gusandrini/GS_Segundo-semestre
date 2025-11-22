@@ -4,8 +4,6 @@ export const OPCOES_OCUPACAO = [
   { id: 3, nome: 'Engenheiro' },
   { id: 4, nome: 'Médico' },
   { id: 5, nome: 'Analista de Sistemas' },
-  { id: 6, nome: 'Sênior' },
-  // ... adiciona o que fizer sentido pra você
 ];
 
 export const OPCOES_CAMPO_ESTUDO = [

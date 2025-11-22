@@ -6,7 +6,12 @@ import { useTheme } from '@/context/ThemeContext';
 
 // Screens de fluxo inicial
 import Cadastro from '@/screens/Cadastro';
+import Home from '@/screens/Home';
 import Login from '@/screens/Login';
+import Perfil from '@/screens/Perfil';
+import DescricaoClienteForm from '@/screens/Previsao';
+import SobreApp from '@/screens/SobreApp';
+import SobreSolucao from '@/screens/SobreSolucao';
 import Splash from '@/screens/Splash';
 import { RootTabs } from './RootTabs';
 
@@ -36,6 +41,13 @@ export function AppNavigation() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Cadastro" component={Cadastro} />
         <Stack.Screen name="Tabs" component={RootTabs} />
+        <Stack.Screen name="DescricaoClienteForm" component={DescricaoClienteForm} />
+        <Stack.Screen name="Perfil" component={Perfil} />
+        <Stack.Screen name="SobreApp" component={SobreApp} />
+        <Stack.Screen name="SobreSolucao" component={SobreSolucao} />
+        <Stack.Screen name="Home" component={Home} />
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );

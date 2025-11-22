@@ -1,6 +1,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import { AppLayout } from '@/layout/AppLayout';
 import { styles as localStyles } from '@/styles/screens/Home';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Swiper from 'react-native-swiper';
@@ -16,6 +17,7 @@ const images = [
 
 export default function Home() {
   const { theme } = useTheme();
+  const navigation = useNavigation();
 
   return (
     <AppLayout title="Início" activeScreen="Home">
@@ -55,18 +57,19 @@ export default function Home() {
 
           <View style={localStyles.actionsRow}>
             <TouchableOpacity
-              style={[
-                localStyles.actionCard,
-                { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
-              ]}
-            >
-              <Text style={[localStyles.actionTitle, { color: theme.colors.text }]}>Fazer previsão</Text>
-              <Text style={[localStyles.actionDesc, { color: theme.colors.mutedText }]}>
-                Calcule sua chance de mudança de carreira.
-              </Text>
-            </TouchableOpacity>
+            style={[
+              localStyles.actionCard,
+              { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+            ]}
+            onPress={() => navigation.navigate('DescricaoClienteForm' as never)} // <<< AQUI
+          >
+            <Text style={[localStyles.actionTitle, { color: theme.colors.text }]}>Fazer previsão</Text>
+            <Text style={[localStyles.actionDesc, { color: theme.colors.mutedText }]}>
+              Calcule sua chance de mudança de carreira.
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[
                 localStyles.actionCard,
                 { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
@@ -76,7 +79,7 @@ export default function Home() {
               <Text style={[localStyles.actionDesc, { color: theme.colors.mutedText }]}>
                 Preencha o formulário para nossa IA.
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
 

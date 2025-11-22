@@ -29,7 +29,7 @@ export function updateUsuario(usuario: Usuario) {
   );
 }
 
-// Excluir
 export function deleteUsuario(id: number | string) {
   return apiClient.delete(`/api/usuarios/remover/${id}`);
 }
+

@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  /* -------- CARD DO PERFIL -------- */
   card: {
     borderRadius: 12,
     padding: 20,
@@ -51,7 +52,7 @@ export const styles = StyleSheet.create({
     fontSize: 15,
   },
 
-  // Linha do switch de tema
+  /* -------- SWITCH TEMA -------- */
   switchRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -74,10 +75,10 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // Ações (botões Atualizar / Sair)
+  /* -------- AÇÕES -------- */
   actions: {
     alignItems: 'stretch',
-    gap: 10,
+    gap: 12,
     marginTop: 8,
   },
 

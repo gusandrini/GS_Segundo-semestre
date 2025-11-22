@@ -15,7 +15,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { AppLayout } from '@/layout/AppLayout';
 import { styles } from '@/styles/screens/Perfil';
 
-import { getUsuario } from '@/api/usuario';
+import { deleteUsuario, getUsuario } from '@/api/usuario'; // 👈 IMPORTANTE
 import type { Usuario } from '@/models/usuario';
 import { useSession } from '@/services/SessionProvider';
 
@@ -79,10 +79,50 @@ export default function Perfil() {
     (navigation as any).navigate('Cadastro', { usuario });
   };
 
-  const funcoesText =
-    usuario?.funcoes && usuario.funcoes.length > 0
-      ? usuario.funcoes.map(f => f.nmFuncao).join(', ')
-      : '—';
+  const handleDelete = () => {
+    if (!usuario) return;
+
+    Alert.alert(
+      'Excluir conta',
+      'Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+
+              console.log('[Perfil][delete] Deletando usuário ID:', usuario.idUsuario);
+              const resp = await deleteUsuario(usuario.idUsuario!);
+              console.log('[Perfil][delete] Resposta delete:', resp.status);
+
+              // limpar sessão
+              await logoutSession();
+              await AsyncStorage.clear();
+
+              Alert.alert('Conta excluída', 'Sua conta foi removida com sucesso.');
+
+              (navigation as any).reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            } catch (err: any) {
+              console.error('[Perfil][delete] Erro ao excluir usuário:', err?.response || err);
+              const msg =
+                err?.response?.data?.message ||
+                err?.response?.data?.error ||
+                'Não foi possível excluir sua conta.';
+              Alert.alert('Erro', msg);
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+    );
+  };
 
   return (
     <AppLayout title="Perfil" activeScreen="Perfil">
@@ -213,6 +253,28 @@ export default function Perfil() {
               ]}
             >
               Sair da conta
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleDelete}
+            activeOpacity={0.85}
+            style={[
+              styles.actionBtn,
+              {
+                backgroundColor: 'transparent',
+                borderColor: theme.colors.error,
+              },
+            ]}
+          >
+            <Ionicons name="trash-outline" size={18} color={theme.colors.error} />
+            <Text
+              style={[
+                styles.actionText,
+                { color: theme.colors.error },
+              ]}
+            >
+              Excluir conta
             </Text>
           </TouchableOpacity>
         </View>

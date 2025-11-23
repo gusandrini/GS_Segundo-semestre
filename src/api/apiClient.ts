@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-const API_BASE_URL = "http://192.168.68.109:8080";
+const API_BASE_URL = "https://nx-api.onrender.com";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

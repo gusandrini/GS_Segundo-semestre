@@ -4,26 +4,22 @@
     "slug": "gs",
     "version": "1.0.0",
     "orientation": "portrait",
-
     "icon": "./src/assets/nx-icon.png",
     "scheme": "gs",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-
     "splash": {
       "image": "./src/assets/nx-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.seuorg.gs",
+      "bundleIdentifier": "com.nexo.gs",
       "buildNumber": "1.0.0"
     },
-
     "android": {
-      "package": "com.seuorg.gs",
+      "package": "com.nexo.gs",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/nx-icon.png",
@@ -32,21 +28,24 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
-
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./src/assets/nx-icon.png"
     },
-
-    "plugins": ["expo-router"],
-
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
     },
-
     "extra": {
-      "env": "production"
+      "env": "production",
+      "commitHash": "f2e7700",
+      "router": {},
+      "eas": {
+        "projectId": "b54a4127-5349-4ebb-979c-e376b10f88bb"
+      }
     }
   }
 }
